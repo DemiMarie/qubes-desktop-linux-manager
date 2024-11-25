@@ -32,6 +32,7 @@ import qubesadmin.tests.mock_app
 
 import qui
 import qui.utils
+from ..tray.gross_gtk3_bug_workaround import DisgustingX11FullscreenWindowHack
 
 import gi
 gi.require_version('Gtk', '3.0')  # isort:skip
@@ -73,6 +74,7 @@ class DevicesTray(Gtk.Application):
     """Tray application for handling devices."""
     def __init__(self, app_name, qapp, dispatcher):
         super().__init__()
+        self.disgusting_hack = DisgustingX11FullscreenWindowHack()
         self.name: str = app_name
 
         # maps: port to connected device (e.g., sys-usb:sda -> block device)
@@ -300,6 +302,7 @@ class DevicesTray(Gtk.Application):
     def show_menu(self, _unused, _event):
         """Show menu at mouse pointer."""
         tray_menu = Gtk.Menu()
+        self.disgusting_hack.show_for_widget(tray_menu)
         theme = self.load_css(tray_menu)
         tray_menu.set_reserve_toggle_size(False)
 
